@@ -1,0 +1,43 @@
+blueprint:
+  name: Time controlled switch
+  description: Keep the selected switch on - always or only during specified hours.
+  domain: automation
+  input:
+    switch:
+      name: Target switch
+      description: The switch to controll.
+      selector:
+        entity:
+          domain: switch
+    schedule:
+      name: Schedule
+      description: Optional schedule to keep the switch on only during specified hours.
+      selector:
+        entity:
+          domain: schedule
+      default: none
+
+variables:
+  switch_entity: !input switch
+  schedule_entity: !input schedule
+
+trigger:
+  - platform: state
+    entity_id: !input switch
+  - platform: time_pattern
+    minutes: "*"
+
+action:
+  - if:
+      - "{{ schedule_entity != 'none' and states(schedule_entity) == 'off' }}"
+    then:
+      - action: switch.turn_off
+        target:
+          entity_id: "{{ switch_entity }}"
+    else:
+      - action: switch.turn_on
+        target:
+          entity_id: "{{ switch_entity }}"
+
+mode: single
+max_exceeded: silent
