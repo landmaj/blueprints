@@ -1,0 +1,29 @@
+blueprint:
+  name: Always on switch
+  description: Keep the selected switch on.
+  domain: automation
+  input:
+    switch:
+      name: Target switch
+      description: The switch to control.
+      selector:
+        entity:
+          domain:
+            - switch
+
+trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id: !input switch
+
+variables:
+  switch_entity: !input switch
+
+action:
+  - action: switch.turn_on
+    target:
+      entity_id: "{{ switch_entity }}"
+
+mode: single
+max_exceeded: silent
