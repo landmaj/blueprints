@@ -46,6 +46,7 @@ For color temperature control you have to create scenes first.
         "transition": 1
     }
 }
+```
 
 ### Warm (2800K)
 
